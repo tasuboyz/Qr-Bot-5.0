@@ -1,0 +1,12 @@
+2024-09-28 17:19:43,848 - commads.components.logger_config - ERROR - Errore durante l'esecuzione di handle_set_state: module 'commads.components.instance' has no attribute 'reader'
+Traceback (most recent call last):
+  File "C:\Users\d.kato\Documents\PROGETTI\Qr Bot 5.0\QR_BOT_V3.0.py", line 23, in main
+    my_bot = QR_BOT()
+  File "C:\Users\d.kato\Documents\PROGETTI\Qr Bot 5.0\telegram_bot.py", line 101, in __init__
+    self.dp.message(F.photo | F.document)(instance.reader.read_process)
+AttributeError: module 'commads.components.instance' has no attribute 'reader'
+2024-09-28 18:28:50,627 - commads.components.logger_config - ERROR - Errore durante l'esecuzione di handle_set_state: FileManager.check_image() missing 1 required positional argument: 'keyboard'
+Traceback (most recent call last):
+  File "C:\Users\d.kato\Documents\PROGETTI\Qr Bot 5.0\commads\user_commands.py", line 103, in recive_image
+    await self.image.check_image(file_path, message, keyboard)
+TypeError: FileManager.check_image() missing 1 required positional argument: 'keyboard'
