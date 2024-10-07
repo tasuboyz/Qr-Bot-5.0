@@ -2,13 +2,19 @@ import sqlite3
 import re
 from commads.components.logger_config import logger
 import time
+import mysql.connector
 
 class Database():
     def __init__(self):
         #self.conn = sqlite3.connect('qruser_malformed.db')
-        self.hive_conn = sqlite3.connect(f'Z:/Cur8 Hive Bot/database.db')
+        self.hive_conn = mysql.connector.connect(
+            host='192.168.1.9',
+            user='khadas',
+            password='Alecinko03',
+            database='cur8_hive_database'
+        )
         self.conn = sqlite3.connect('qruser.db')
-        self.c_hive = self.conn.cursor()
+        self.c_hive = self.hive_conn.cursor()
         self.c = self.conn.cursor()            
         #tables
         self.LANGUAGE = "LANGUAGE"
@@ -55,7 +61,6 @@ class Database():
         self.c.execute(f'''CREATE TABLE IF NOT EXISTS {self.LANGUAGE} ({self.user_id} INT PRIMARY KEY, {self.language_code} TEXT)''')
         self.c.execute(f'''CREATE TABLE IF NOT EXISTS {self.SAVED_TEXT} ({self.user_id} INTEGER PRIMARY KEY, {self.saved_text} TEXT)''')
         self.c.execute(f'''CREATE TABLE IF NOT EXISTS {self.ADS_TEXT} ({self.user_id} INTEGER PRIMARY KEY, {self.ads_text} TEXT)''')
-        self.c.execute(f'''CREATE TABLE IF NOT EXISTS {self.USER_ACCOUNT} ({self.user_id} INTEGER PRIMARY KEY, {self.account} TEXT, {self.password} TEXT)''')
         self.conn.commit()
         
     def copy_data(self):
@@ -309,14 +314,22 @@ class Database():
 ############################################################################################################
 
     def get_user_account(self, user_id):
-        self.c_hive.execute(f'''SELECT {self.account}, {self.password} FROM {self.USER_ACCOUNT} WHERE {self.user_id} = ?''', (user_id,))
+        query = f"SELECT account, password FROM USER_ACCOUNT WHERE user_id = %s"
+        self.c_hive.execute(query, (user_id,))
         result = self.c_hive.fetchone()
         if result:
             account, password = result
             if any(char.isupper() for char in account):
-                account = str(account).lower()
-                self.c_hive.execute(f'''UPDATE {self.USER_ACCOUNT} SET {self.account} = ? WHERE {self.user_id} = ?''', (account, user_id))
+                account = account.lower()
+                update_query = f"UPDATE USER_ACCOUNT SET account = %s WHERE user_id = %s"
+                self.c_hive.execute(update_query, (account, user_id))
                 self.hive_conn.commit()
             return result
         else:
             return None
+        
+    def close_connection(self):
+        self.c.close()
+        self.c_hive.close()
+        self.conn.close()
+        self.hive_conn.close()

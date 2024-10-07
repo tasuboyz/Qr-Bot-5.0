@@ -15,7 +15,7 @@ async def on_start():
     print("Bot avviato")
 
 async def on_stop():
-    Database().conn.close()
+    Database().close_connection()
     print("Bot fermato")
 
 async def main():

@@ -98,6 +98,7 @@ class Input:
         if result:
             username = result[0]
             wif = result[1]
+            
         return
 
     async def recive_image(self, message: Message, is_mp4=False):
@@ -143,15 +144,3 @@ class Input:
         except Exception as ex:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
             await bot.send_message(admin_id, f"{chat_id}:{ex}")
-
-    def get_color_from_web(self, message: Message):
-        info = UserInfo(message)
-        user_id = info.user_id
-        try:
-            data = json.loads(message.web_app_data.data) ##get data responce
-            color = tuple(data['rgb'].values())     
-            color = ','.join(map(str, color))
-            Database().save_color_in_settings(user_id, color)
-            return color
-        except Exception as ex:
-            logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
