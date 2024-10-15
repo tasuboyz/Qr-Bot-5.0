@@ -710,5 +710,21 @@
         }
         return lang_text.get(language_code, eng_message)
 
+    def customize_qr(self, language_code):
+        eng = "Customize QR 🎨"
+        lang_text = {
+            'it': "Personalizza QR 🎨",
+            'en': eng,
+            'hi': "क्यूआर को अनुकूलित करें 🎨",
+            'es': "Personalizar QR 🎨",
+            'fr': "Personnaliser QR 🎨",
+            'de': "QR anpassen 🎨",
+            'ru': "Настроить QR 🎨",
+            'uk': "Налаштувати QR 🎨",
+            'zh': "自定义 QR 🎨",
+            'ar': "تخصيص QR 🎨"
+        }
+        return lang_text.get(language_code, eng)
+
 
 

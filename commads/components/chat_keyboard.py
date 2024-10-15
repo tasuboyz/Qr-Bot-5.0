@@ -11,7 +11,7 @@ class Keyboard_Manager:
         self.color_url = 'https://python-telegram-bot.org/static/webappbot'
         self.premium_bot = 'https://t.me/TasuPremiumBot'
         self.qr_info_url = 'https://tasuboyz.github.io/Qr-Info-TWA/'
-        self.qr_wifi = 'https://tasuboyz.github.io/Qr-Wifi-Info/'
+        self.qr_interface = 'https://tasuboyz.github.io/Qr-interface/'
         self.lang = Language()
         
     def create_start_reply_keyboard(self, data):
@@ -22,10 +22,10 @@ class Keyboard_Manager:
         scan_qr = self.lang.scan_qr(language_code)
         lang_setting = self.lang.language_setting(language_code)
         #ai_qrcode = self.lang.ai_qrcode(language_code)
+        customize_qr = self.lang.customize_qr(language_code)
         keyboard = ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[
             [
-                KeyboardButton(text=normal_qr),
-                KeyboardButton(text=visual_qr)
+                KeyboardButton(text=customize_qr, web_app=WebAppInfo(url=self.qr_interface)) 
             ],
             # [
             #     KeyboardButton(text=ai_qrcode)

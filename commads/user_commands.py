@@ -22,6 +22,7 @@ from .processing.keyboard_command import Keyboard_Commands
 from .processing import process
 from .components.db import Database
 from .components.qr import QR
+import json
 
 class User_Commands:
     def __init__(self):
@@ -154,3 +155,44 @@ class User_Commands:
         except Exception as ex:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
             await bot.send_message(admin_id, f"{user_id}:{ex}")
+
+    def get_web_app_data(self, message: Message):
+        info = UserInfo(message)
+        user_id = info.user_id
+        try:
+            data = json.loads(message.web_app_data.data) ##get data responce
+            type = data.get('type')
+            mode = data.get('mode')
+            color = data.get('color')
+            bgColor = data.get('bgColor')
+            content = data.get('content')
+            ssid = data.get('ssid')
+            password = data.get('password')
+            encryption = data.get('encryption')
+            name = data.get('name')
+            phones = data.get('phones')
+            emails = data.get('emails')
+            addresses = data.get('addresses')
+            latitude = data.get('latitude')
+            longitude = data.get('longitude')
+            surname = data.get('surname')
+            urls = data.get('urls')
+
+            #print(data)
+            if type == 'wifi':
+                wifi_string = f"WIFI:T:{encryption};S:{ssid};P:{password};"
+                return wifi_string
+            elif type == 'mecard':
+                phones_str = ';'.join([f"TEL:{phone}" for phone in phones if phone])
+                emails_str = ';'.join([f"EMAIL:{email}" for email in emails if email])
+                addresses_str = ';'.join([f"ADR:{address}" for address in addresses if address])
+                urls_str = ';'.join([f"URL:{url}" for url in urls if url])
+                mecard_string = f"MECARD:N:{name};{phones_str};{emails_str};{addresses_str};{urls_str};"
+                print(mecard_string)
+                return mecard_string
+            elif type == 'geo':
+                geo_string = f"GEO:{latitude},{longitude}"
+                return geo_string
+                
+        except Exception as ex:
+            logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)

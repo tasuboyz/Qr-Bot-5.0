@@ -51,6 +51,7 @@ class QR_BOT():
         self.dp.message(Form.set_separator, F.text.in_(self.language.back_to_custom))(self.keyboard_commands.choose_customization)
         self.dp.message(Form.set_timing_dark, F.text.in_(self.language.back_to_custom))(self.keyboard_commands.choose_customization)
         self.dp.message(Form.set_timing_light, F.text.in_(self.language.back_to_custom))(self.keyboard_commands.choose_customization)
+        self.dp.message(F.web_app_data)(self.user_commands.get_web_app_data)
         self.dp.message(Form.set_alignment_dark, F.web_app_data)(self.color.advanced_custom_color)
         self.dp.message(Form.set_alignment_light, F.web_app_data)(self.color.advanced_custom_color)
         self.dp.message(Form.set_data_dark, F.web_app_data)(self.color.advanced_custom_color)
