@@ -158,7 +158,7 @@ class User_Commands:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
             await bot.send_message(admin_id, f"{user_id}:{ex}")
 
-    async def get_web_app_data(self, message: Message):
+    async def get_web_app_data(self, message: Message, state: FSMContext):
         info = UserInfo(message)
         user_id = info.user_id
         try:
@@ -192,7 +192,7 @@ class User_Commands:
             def is_valid_url(url):
                 return url and url.startswith("http")
             
-            print(data)
+            #print(data)
 
             if type == 'wifi':
                 wifi_string = f"WIFI:T:{encryption};S:{ssid};P:{password};"
@@ -217,6 +217,12 @@ class User_Commands:
             
             if mode == 'normal':
                 await process.create_qr(message, None)
+            else:
+                language_code = message.from_user.language_code
+                lang = Language().send_image(language_code)
+                await state.set_state(Form.Image_VisualQR)
+                keyboard =  self.keyboards.cancel(message)
+                await message.reply(lang, reply_markup=keyboard)
 
         except Exception as ex:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
