@@ -7,14 +7,15 @@ import mysql.connector
 class Database():
     def __init__(self):
         #self.conn = sqlite3.connect('qruser_malformed.db')
-        self.hive_conn = mysql.connector.connect(
-            host='192.168.1.9',
-            user='khadas',
-            password='Alecinko03',
-            database='cur8_hive_database'
-        )
+        # self.hive_conn = mysql.connector.connect(
+        #     host='192.168.1.9',
+        #     user='khadas',
+        #     password='Alecinko03',
+        #     database='cur8_hive_database'
+        # )
+        # self.c_hive = self.hive_conn.cursor()
+
         self.conn = sqlite3.connect('qruser.db')
-        self.c_hive = self.hive_conn.cursor()
         self.c = self.conn.cursor()            
         #tables
         self.LANGUAGE = "LANGUAGE"

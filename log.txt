@@ -10,3 +10,39 @@ Traceback (most recent call last):
   File "C:\Users\d.kato\Documents\PROGETTI\Qr Bot 5.0\commads\user_commands.py", line 103, in recive_image
     await self.image.check_image(file_path, message, keyboard)
 TypeError: FileManager.check_image() missing 1 required positional argument: 'keyboard'
+2024-10-16 15:45:18,541 - commads.components.logger_config - ERROR - Errore durante l'esecuzione di handle_set_state: [Errno 2] No such file or directory: 'ciao'
+Traceback (most recent call last):
+  File "C:\Temp\Qr-Bot-5.0\commads\processing\process.py", line 65, in process_qr_creation
+    shutil.copy2(file_name, copy_file)
+  File "C:\Users\RP_Administrator\AppData\Local\Programs\Python\Python310\lib\shutil.py", line 434, in copy2
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+  File "C:\Users\RP_Administrator\AppData\Local\Programs\Python\Python310\lib\shutil.py", line 254, in copyfile
+    with open(src, 'rb') as fsrc:
+FileNotFoundError: [Errno 2] No such file or directory: 'ciao'
+2024-10-16 15:49:38,278 - commads.components.logger_config - ERROR - Errore durante l'esecuzione di handle_set_state: create_qr() missing 1 required positional argument: 'file_name'
+Traceback (most recent call last):
+  File "C:\Temp\Qr-Bot-5.0\commads\user_commands.py", line 216, in get_web_app_data
+    await process.create_qr(message)
+TypeError: create_qr() missing 1 required positional argument: 'file_name'
+2024-10-16 15:50:10,785 - commads.components.logger_config - ERROR - Errore durante l'esecuzione di handle_set_state: expected str, bytes or os.PathLike object, not NoneType
+Traceback (most recent call last):
+  File "C:\Temp\Qr-Bot-5.0\commads\processing\process.py", line 61, in process_qr_creation
+    await result.send_qr_result(data, copy_file)
+  File "C:\Temp\Qr-Bot-5.0\commads\processing\result.py", line 88, in send_qr_result
+    await self.send_image_or_gif(user_id, img_path, keyboard)
+  File "C:\Temp\Qr-Bot-5.0\commads\processing\result.py", line 94, in send_image_or_gif
+    name ,estensione = os.path.splitext(img_path)
+  File "C:\Users\RP_Administrator\AppData\Local\Programs\Python\Python310\lib\ntpath.py", line 230, in splitext
+    p = os.fspath(p)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2024-10-16 16:06:59,500 - commads.components.logger_config - ERROR - Errore durante l'esecuzione di handle_set_state: expected str, bytes or os.PathLike object, not NoneType
+Traceback (most recent call last):
+  File "C:\Temp\Qr-Bot-5.0\commads\processing\process.py", line 61, in process_qr_creation
+    await result.send_qr_result(data, copy_file)
+  File "C:\Temp\Qr-Bot-5.0\commads\processing\result.py", line 88, in send_qr_result
+    await self.send_image_or_gif(user_id, img_path, keyboard)
+  File "C:\Temp\Qr-Bot-5.0\commads\processing\result.py", line 94, in send_image_or_gif
+    name ,estensione = os.path.splitext(img_path)
+  File "C:\Users\RP_Administrator\AppData\Local\Programs\Python\Python310\lib\ntpath.py", line 230, in splitext
+    p = os.fspath(p)
+TypeError: expected str, bytes or os.PathLike object, not NoneType

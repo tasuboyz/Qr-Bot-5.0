@@ -15,6 +15,7 @@ from ..components import config
 from ..components.chat_keyboard import Keyboard_Manager
 from ..components.language import Language
 from .result import Send_Result
+import re
 
 class ColorManager: # crea una classe per gestire i colori e le impostazioni del QR
     def __init__(self):
@@ -105,13 +106,20 @@ class ColorManager: # crea una classe per gestire i colori e le impostazioni del
         except Exception as ex:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
             await bot.send_message(self.admin_id, f"{user_id}:{ex}") 
+
+    async def custom_light(self, message: Message, color):
+        info = UserInfo(message)
+        user_id = info.user_id
+        foreground_color, background_color, alignment_dark, alignment_light, data_dark, data_light, finder_dark, finder_light, quiet_zone, separator, timing_dark, timing_light, version_dark, version_light, version = Database().get_settings(user_id)
+        Database().save_settings(user_id, foreground_color, color, alignment_dark, color, data_dark, color, finder_dark, color, quiet_zone, separator, timing_dark, color, version_dark, color, version)
+        #await process.create_qr(message, image) #create qr
             
-    async def custom_dark(self, message, color, image):
+    async def custom_dark(self, message: Message, color):
         info = UserInfo(message)
         user_id = info.user_id
         foreground_color, background_color, alignment_dark, alignment_light, data_dark, data_light, finder_dark, finder_light, quiet_zone, separator, timing_dark, timing_light, version_dark, version_light, version = Database().get_settings(user_id)
         Database().save_settings(user_id, color, background_color, color, alignment_light, color, data_light, color, finder_light, quiet_zone, separator, color, timing_light, color, version_light, version)
-        await process.create_qr(message, image) #create qr
+        #await process.create_qr(message, image) #create qr
 
     async def advanced_custom_color(self, message: Message, state: FSMContext):
         info = UserInfo(message)
@@ -168,4 +176,23 @@ class ColorManager: # crea una classe per gestire i colori e le impostazioni del
             await message.reply(personalize_color, reply_markup=keyboard)
         except Exception as ex:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
-            await bot.send_message(self.admin_id, f"{user_id}:{ex}") 
+            await bot.send_message(self.admin_id, f"{user_id}:{ex}")
+
+    def is_rgb(self, color):
+        # Controlla se il colore è in formato RGB
+        rgb_pattern = r'^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$'
+        return re.match(rgb_pattern, color)
+
+    def hex_to_rgb(self, hex_color):
+        # Remove the '#' symbol
+        hex_color = hex_color.lstrip('#')
+        # Convert the HEX color to RGB
+        rgb_values = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        return f"{rgb_values[0]}, {rgb_values[1]}, {rgb_values[2]}"
+
+    def process_color(self, color):
+        if self.is_rgb(color):
+            return color
+        else:
+            rgb_color = self.hex_to_rgb(color)
+            return rgb_color

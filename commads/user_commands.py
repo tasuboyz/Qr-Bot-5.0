@@ -23,6 +23,7 @@ from .processing import process
 from .components.db import Database
 from .components.qr import QR
 import json
+from .processing.color import ColorManager
 
 class User_Commands:
     def __init__(self):
@@ -35,6 +36,7 @@ class User_Commands:
         self.input_user = Input()
         self.keyboard_command = Keyboard_Commands()
         self.semaforo = asyncio.Semaphore(1)
+        self.color = ColorManager()
         pass    
 
     async def command_start_handler(self, message: Message) -> None: 
@@ -156,11 +158,11 @@ class User_Commands:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
             await bot.send_message(admin_id, f"{user_id}:{ex}")
 
-    def get_web_app_data(self, message: Message):
+    async def get_web_app_data(self, message: Message):
         info = UserInfo(message)
         user_id = info.user_id
         try:
-            data = json.loads(message.web_app_data.data) ##get data responce
+            data = json.loads(message.web_app_data.data)  # get data response
             type = data.get('type')
             mode = data.get('mode')
             color = data.get('color')
@@ -178,21 +180,44 @@ class User_Commands:
             surname = data.get('surname')
             urls = data.get('urls')
 
-            #print(data)
+            def is_valid_phone(phone):
+                return phone and len(phone) > 3  # Adjust the length check as needed
+
+            def is_valid_email(email):
+                return email and "@" in email
+
+            def is_valid_address(address):
+                return address and len(address) > 5  # Adjust the length check as needed
+
+            def is_valid_url(url):
+                return url and url.startswith("http")
+            
+            print(data)
+
             if type == 'wifi':
                 wifi_string = f"WIFI:T:{encryption};S:{ssid};P:{password};"
-                return wifi_string
+                content = wifi_string
             elif type == 'mecard':
-                phones_str = ';'.join([f"TEL:{phone}" for phone in phones if phone])
-                emails_str = ';'.join([f"EMAIL:{email}" for email in emails if email])
-                addresses_str = ';'.join([f"ADR:{address}" for address in addresses if address])
-                urls_str = ';'.join([f"URL:{url}" for url in urls if url])
+                phones_str = ';'.join([f"TEL:{phone}" for phone in phones if is_valid_phone(phone)])
+                emails_str = ';'.join([f"EMAIL:{email}" for email in emails if is_valid_email(email)])
+                addresses_str = ';'.join([f"ADR:{address}" for address in addresses if is_valid_address(address)])
+                urls_str = ';'.join([f"URL:{url}" for url in urls if is_valid_url(url)])
                 mecard_string = f"MECARD:N:{name};{phones_str};{emails_str};{addresses_str};{urls_str};"
-                print(mecard_string)
-                return mecard_string
+                content = mecard_string
             elif type == 'geo':
                 geo_string = f"GEO:{latitude},{longitude}"
-                return geo_string
-                
+                content = geo_string
+            
+            self.db.default_setting(user_id) ##default setting
+            color = self.color.process_color(color)
+            bgColor = self.color.process_color(bgColor)
+            await self.color.custom_dark(message, color)
+            await self.color.custom_light(message, bgColor)
+            self.db.user_text(user_id, content)
+            
+            if mode == 'normal':
+                await process.create_qr(message, None)
+
         except Exception as ex:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
+
