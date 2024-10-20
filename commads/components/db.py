@@ -314,23 +314,23 @@ class Database():
 ############################################################################################################
 ############################################################################################################
 
-    def get_user_account(self, user_id):
-        query = f"SELECT account, password FROM USER_ACCOUNT WHERE user_id = %s"
-        self.c_hive.execute(query, (user_id,))
-        result = self.c_hive.fetchone()
-        if result:
-            account, password = result
-            if any(char.isupper() for char in account):
-                account = account.lower()
-                update_query = f"UPDATE USER_ACCOUNT SET account = %s WHERE user_id = %s"
-                self.c_hive.execute(update_query, (account, user_id))
-                self.hive_conn.commit()
-            return result
-        else:
-            return None
+    # def get_user_account(self, user_id):
+    #     query = f"SELECT account, password FROM USER_ACCOUNT WHERE user_id = %s"
+    #     self.c_hive.execute(query, (user_id,))
+    #     result = self.c_hive.fetchone()
+    #     if result:
+    #         account, password = result
+    #         if any(char.isupper() for char in account):
+    #             account = account.lower()
+    #             update_query = f"UPDATE USER_ACCOUNT SET account = %s WHERE user_id = %s"
+    #             self.c_hive.execute(update_query, (account, user_id))
+    #             self.hive_conn.commit()
+    #         return result
+    #     else:
+    #         return None
         
     def close_connection(self):
         self.c.close()
-        self.c_hive.close()
+        #self.c_hive.close()
         self.conn.close()
-        self.hive_conn.close()
+        #self.hive_conn.close()

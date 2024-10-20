@@ -43,18 +43,18 @@ class QR:
             image = Image.open(file_name)
             inverted_image = ImageOps.invert(image)
        
-            # qr_results = await asyncio.gather( #Decodifica prima i QR code con pyzbar
-            #     self.decode_qr(image),
-            #     self.decode_qr(inverted_image),
-            # )
-            # if not any(qr_results): #Se non viene trovato alcun QR code, decodifica i codici in zxing-cpp
-            results = await asyncio.gather(
-                self.decode_pdf417(image),
-                self.decode_barcode(image),
+            qr_results = await asyncio.gather( #Decodifica prima i QR code con pyzbar
+                self.decode_qr(image),
+                self.decode_qr(inverted_image),
             )
-                # results = qr_results + other_results 
-            # else:
-            #     results = qr_results 
+            if not any(qr_results): #Se non viene trovato alcun QR code, decodifica i codici in zxing-cpp
+                other_results = await asyncio.gather(
+                    self.decode_pdf417(image),
+                    self.decode_barcode(image),
+                )
+                results = qr_results + other_results 
+            else:
+                results = qr_results 
             copy_file = f"{name}.jpg"
             if os.path.exists(copy_file) and copy_file.startswith("qr_"):
                 os.remove(copy_file)
@@ -79,16 +79,16 @@ class QR:
             print(f"Errore durante la conversione in JPG: {e}")
             return None
 
-    # async def decode_qr(self, image):
-    #     decoded_objects = decode(image)
-    #     results = {}
-    #     if decoded_objects:
-    #         for obj in decoded_objects:
-    #             cleaned_data = obj.data.decode("utf-8")
-    #             if obj.type not in results:
-    #                 results[obj.type] = []
-    #             results[obj.type].append(cleaned_data)
-    #     return results
+    async def decode_qr(self, image):
+        decoded_objects = decode(image)
+        results = {}
+        if decoded_objects:
+            for obj in decoded_objects:
+                cleaned_data = obj.data.decode("utf-8")
+                if obj.type not in results:
+                    results[obj.type] = []
+                results[obj.type].append(cleaned_data)
+        return results
                 
     async def decode_barcode(self, image):
         decoded_object = zxingcpp.read_barcode(image) #Utilizza ZXing-C++ per decodificare i Barcode e anche QR code

@@ -40,7 +40,7 @@ class Admin_Commands:
             # user_instance.Open()
             try:
                 results = Database().write_ids()
-                file = FileMod(admin_id, bot)
+                file = FileMod()
                 await file.write_ids(results)
                 count_users = Database().count_users()
                 await bot.delete_message(chat_id, message_id)

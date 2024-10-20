@@ -46,3 +46,9 @@ Traceback (most recent call last):
   File "C:\Users\RP_Administrator\AppData\Local\Programs\Python\Python310\lib\ntpath.py", line 230, in splitext
     p = os.fspath(p)
 TypeError: expected str, bytes or os.PathLike object, not NoneType
+2024-10-20 10:21:35,661 - commads.components.logger_config - ERROR - Errore durante l'esecuzione di handle_set_state: FileMod.__init__() takes 1 positional argument but 3 were given
+Traceback (most recent call last):
+  File "C:\tmp\Qr-Bot-5.0\commads\admin_command.py", line 43, in process_callback_view_users
+    file = FileMod(admin_id, bot)
+TypeError: FileMod.__init__() takes 1 positional argument but 3 were given
+2024-10-20 10:24:32,631 - commads.components.logger_config - ERROR - Completed!
