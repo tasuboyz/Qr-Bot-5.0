@@ -158,14 +158,14 @@ class Keyboard_Manager:
         version = self.lang.custom_version(language_code)
         keyboard = ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[
             [
-                KeyboardButton(text=custom_foreground),
+                # KeyboardButton(text=custom_foreground),
                 KeyboardButton(text=custom_background) 
             ],
             # [
             #     KeyboardButton(text="Version") 
             # ],
             [
-                KeyboardButton(text="Advanced Custom ⚙️") 
+                # KeyboardButton(text="Advanced Custom ⚙️") 
             ],
             [
                 KeyboardButton(text=confirm) 
