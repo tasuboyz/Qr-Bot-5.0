@@ -14,12 +14,48 @@ from .language import Language
 from . import instance
 from .config import admin_id
 from .db import Database
+from aiogram.types import Message
 
 class FileManager: # crea una classe per gestire i colori e le impostazioni del QR
     def __init__(self):
         self.bot = instance.bot
         self.admin_id = admin_id
         self.lang = Language()
+
+    async def recive_image(self, message: Message, is_gif=False):
+        chat_id = message.chat.id
+        info = UserInfo(message)
+        language_code = info.language
+        try:
+            if message.document or message.photo or message.animation or message.video:
+                if message.video:
+                    file = message.video
+                elif message.animation:
+                    file = message.animation
+                    is_gif = True  # Imposta is_gif su True se il file è un'animazione
+                else:
+                    file = message.document or message.photo[-1] # type: ignore
+                file_info = await self.bot.get_file(file.file_id)
+                file_path = file_info.file_path                
+
+                uid = uuid.uuid4()               
+                file_extension = file_path.split(".")[-1]     # type: ignore
+                file_name = f"{uid}.{file_extension}"  
+
+                directory_path = f"UserImage"
+                if not os.path.exists(directory_path):
+                    os.makedirs(directory_path)
+
+                download_path = os.path.join(directory_path, file_name)
+                file_path = self.check_file_exists(file_path)
+
+                await self.bot.download_file(file_path, download_path) # type: ignore
+
+                return download_path, file_name
+            return None
+        except Exception as ex:
+            logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
+            await self.bot.send_message(self.admin_id, f"{chat_id}:{ex}")     
 
     def resize(self, file_path, fill_color):
         try:

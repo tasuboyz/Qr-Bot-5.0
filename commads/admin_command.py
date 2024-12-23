@@ -9,6 +9,7 @@ from .components.logger_config import logger
 from aiogram.fsm.context import FSMContext
 from .components.memory import Form
 from .user_commands import User_Commands
+import os
 
 class Admin_Commands:
     def __init__(self):
@@ -83,8 +84,9 @@ class Admin_Commands:
     async def repair_user_id(self, message: Message, state: FSMContext):
         await state.clear()
         try:
-            _, file_path = await self.image.recive_image(message, False)
-            self.db.insert_all_users(file_path)
+            download_path, file_path = await self.image.recive_image(message, False)
+            self.db.insert_all_users(download_path)
+            os.remove(file_path)
             await message.reply("Repair succesful!")
         except Exception as ex:
             logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
