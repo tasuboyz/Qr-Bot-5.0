@@ -95,6 +95,6 @@ class Send_Result:
             input_file = types.FSInputFile(img_path)  # Crea un oggetto FSInputFile dal percorso del file
             ads = self.db.get_ads()
             if estensione != '.gif':
-                await bot.send_photo(chat_id=user_id, caption=ads ,photo=input_file, reply_markup=keyboard)  
+                await bot.send_photo(chat_id=user_id, caption=ads ,photo=input_file)  
             else:
-                await bot.send_animation(chat_id=user_id, caption=ads ,animation=input_file, reply_markup=keyboard)     
+                await bot.send_animation(chat_id=user_id, caption=ads ,animation=input_file)     

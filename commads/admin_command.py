@@ -3,7 +3,7 @@ from .components.config import admin_id
 from .components.chat_keyboard import Keyboard_Manager
 from .components.image import FileManager, FileMod
 from .components.db import Database
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, FSInputFile
 from .components.user import UserInfo
 from .components.logger_config import logger
 from aiogram.fsm.context import FSMContext
@@ -44,7 +44,9 @@ class Admin_Commands:
                 await file.write_ids(results)
                 count_users = Database().count_users()
                 await bot.delete_message(chat_id, message_id)
-                await bot.send_message(admin_id, f"👤 Il numero di utenti è {count_users}")  
+                input_file = FSInputFile("ids.txt")
+                await bot.send_document(admin_id, document=input_file, caption=f"👤 Il numero di utenti è {count_users}")
+                # await bot.send_message(admin_id, f"👤 Il numero di utenti è {count_users}")  
             except Exception as ex:
                 logger.error(f"Errore durante l'esecuzione di handle_set_state: {ex}", exc_info=True)
                 await bot.send_message(admin_id, f"{user_id}:{ex}")
@@ -110,11 +112,12 @@ class Admin_Commands:
                 #    logger.error(f"Completed!")
                 #    break
                 try:
+                    keyboard = self.keyboards.create_start_reply_keyboard(message)
                     await message.send_copy(user_id[0])
                     #logger.error(f"{user_id[0]} Sended! {count}")
                     count += 1
                     if count % 100 == 0:
-                        await bot.edit_message_text(chat_id=admin_id, text=f"{count}", message_id=counter.message_id)
+                        await bot.edit_message_text(chat_id=admin_id, text=f"{count}", message_id=counter.message_id, reply_markup=keyboard)
                 except Exception as e:             
                     #logger.error(f"{user_id[0]}, delated \n{e}") 
                     id_to_delate.append(user_id[0])
