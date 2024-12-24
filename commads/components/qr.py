@@ -1,5 +1,5 @@
 ﻿from aiogram.methods import send_photo
-# from pyzbar.pyzbar import decode
+from pyzbar.pyzbar import decode
 import os
 from pdf417decoder import PDF417Decoder
 #import numpy as np
